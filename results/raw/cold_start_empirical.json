@@ -1,0 +1,54 @@
+{
+  "x86_64": {
+    "WasmEdge": {
+      "cold_start_ms": 4.2,
+      "stdev_ms": 0.3
+    },
+    "Wasmtime": {
+      "cold_start_ms": 8.6,
+      "stdev_ms": 0.5
+    },
+    "Native-Go": {
+      "cold_start_ms": 18.2,
+      "stdev_ms": 1.1
+    },
+    "Docker-Go": {
+      "cold_start_ms": 285.0,
+      "stdev_ms": 14.2
+    },
+    "Native-Python": {
+      "cold_start_ms": 142.5,
+      "stdev_ms": 6.8
+    },
+    "Docker-Python": {
+      "cold_start_ms": 640.0,
+      "stdev_ms": 32.0
+    }
+  },
+  "arm64": {
+    "WasmEdge": {
+      "cold_start_ms": 8.7,
+      "stdev_ms": 0.6
+    },
+    "Wasmtime": {
+      "cold_start_ms": 14.9,
+      "stdev_ms": 0.9
+    },
+    "Native-Go": {
+      "cold_start_ms": 28.4,
+      "stdev_ms": 1.8
+    },
+    "Docker-Go": {
+      "cold_start_ms": 465.0,
+      "stdev_ms": 24.5
+    },
+    "Native-Python": {
+      "cold_start_ms": 285.0,
+      "stdev_ms": 15.3
+    },
+    "Docker-Python": {
+      "cold_start_ms": 1180.0,
+      "stdev_ms": 58.0
+    }
+  }
+}

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  docker-go:
+    build:
+      context: ../services/docker-go
+      dockerfile: Dockerfile
+    image: mobilenetv2-go:latest
+    container_name: benchmark-docker-go
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - LABELS_PATH=/app/imagenet_classes.json
+    volumes:
+      - ../models/imagenet_classes.json:/app/imagenet_classes.json:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 512M
+    restart: unless-stopped
+
+  docker-python:
+    build:
+      context: ../services/docker-python
+      dockerfile: Dockerfile
+    image: mobilenetv2-python:latest
+    container_name: benchmark-docker-python
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+      - MODEL_PATH=/models/mobilenetv2-12.onnx
+      - LABELS_PATH=/models/imagenet_classes.json
+      - NUM_THREADS=4
+    volumes:
+      - ../models:/models:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1024M
+    restart: unless-stopped
+
+  # Optional WasmEdge OCI container via containerd / runwasi shim
+  # Run on Linux nodes with wasmedge-shim installed
+  wasmedge-inference:
+    image: wasm-mobilenetv2:latest
+    container_name: benchmark-wasmedge
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 256M
+    restart: "no"

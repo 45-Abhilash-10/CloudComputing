@@ -1,0 +1,66 @@
+{
+  "x86_64": {
+    "WasmEdge": {
+      "energy_joules_1k": 199.3,
+      "avg_power_w": 28.4,
+      "inferences_per_joule": 5.02
+    },
+    "Wasmtime": {
+      "energy_joules_1k": 248.4,
+      "avg_power_w": 31.8,
+      "inferences_per_joule": 4.03
+    },
+    "Native-Go": {
+      "energy_joules_1k": 244.1,
+      "avg_power_w": 33.2,
+      "inferences_per_joule": 4.1
+    },
+    "Docker-Go": {
+      "energy_joules_1k": 299.2,
+      "avg_power_w": 36.5,
+      "inferences_per_joule": 3.34
+    },
+    "Native-Python": {
+      "energy_joules_1k": 531.8,
+      "avg_power_w": 46.8,
+      "inferences_per_joule": 1.88
+    },
+    "Docker-Python": {
+      "energy_joules_1k": 732.4,
+      "avg_power_w": 54.2,
+      "inferences_per_joule": 1.37
+    }
+  },
+  "arm64": {
+    "WasmEdge": {
+      "energy_joules_1k": 106.5,
+      "avg_power_w": 4.1,
+      "inferences_per_joule": 9.39
+    },
+    "Wasmtime": {
+      "energy_joules_1k": 143.8,
+      "avg_power_w": 4.6,
+      "inferences_per_joule": 6.95
+    },
+    "Native-Go": {
+      "energy_joules_1k": 141.2,
+      "avg_power_w": 4.8,
+      "inferences_per_joule": 7.08
+    },
+    "Docker-Go": {
+      "energy_joules_1k": 176.3,
+      "avg_power_w": 5.2,
+      "inferences_per_joule": 5.67
+    },
+    "Native-Python": {
+      "energy_joules_1k": 335.2,
+      "avg_power_w": 6.1,
+      "inferences_per_joule": 2.98
+    },
+    "Docker-Python": {
+      "energy_joules_1k": 459.5,
+      "avg_power_w": 6.8,
+      "inferences_per_joule": 2.18
+    }
+  }
+}

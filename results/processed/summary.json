@@ -1,0 +1,729 @@
+{
+  "metadata": {
+    "title": "Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference",
+    "team": "Team 3 (4 Students)",
+    "model": "MobileNetV2 (ONNX FP32)",
+    "input_resolution": "3x224x224",
+    "timestamp": "2026-09-30T18:11:13Z",
+    "architectures": {
+      "x86_64": {
+        "name": "AWS EC2 c6i.xlarge",
+        "cpu": "Intel Xeon Platinum 8375C (4 vCPUs @ 2.9 GHz)",
+        "ram_gb": 8.0,
+        "os": "Ubuntu 22.04 LTS",
+        "kernel": "5.15.0-generic"
+      },
+      "arm64": {
+        "name": "Raspberry Pi 4 Model B / AWS Graviton3",
+        "cpu": "Broadcom BCM2711 / Quad-core Cortex-A72 @ 1.5 GHz",
+        "ram_gb": 4.0,
+        "os": "Debian 12 / Ubuntu 22.04 aarch64",
+        "kernel": "5.15.0-arm64"
+      }
+    }
+  },
+  "cold_start": {
+    "x86_64": {
+      "WasmEdge": {
+        "cold_start_ms": 4.2,
+        "stdev_ms": 0.3
+      },
+      "Wasmtime": {
+        "cold_start_ms": 8.6,
+        "stdev_ms": 0.5
+      },
+      "Native-Go": {
+        "cold_start_ms": 18.2,
+        "stdev_ms": 1.1
+      },
+      "Docker-Go": {
+        "cold_start_ms": 285.0,
+        "stdev_ms": 14.2
+      },
+      "Native-Python": {
+        "cold_start_ms": 142.5,
+        "stdev_ms": 6.8
+      },
+      "Docker-Python": {
+        "cold_start_ms": 640.0,
+        "stdev_ms": 32.0
+      }
+    },
+    "arm64": {
+      "WasmEdge": {
+        "cold_start_ms": 8.7,
+        "stdev_ms": 0.6
+      },
+      "Wasmtime": {
+        "cold_start_ms": 14.9,
+        "stdev_ms": 0.9
+      },
+      "Native-Go": {
+        "cold_start_ms": 28.4,
+        "stdev_ms": 1.8
+      },
+      "Docker-Go": {
+        "cold_start_ms": 465.0,
+        "stdev_ms": 24.5
+      },
+      "Native-Python": {
+        "cold_start_ms": 285.0,
+        "stdev_ms": 15.3
+      },
+      "Docker-Python": {
+        "cold_start_ms": 1180.0,
+        "stdev_ms": 58.0
+      }
+    }
+  },
+  "memory": {
+    "x86_64": {
+      "WasmEdge": {
+        "idle_rss_mb": 7.4,
+        "active_rss_mb": 14.8,
+        "delta_mb": 7.4
+      },
+      "Wasmtime": {
+        "idle_rss_mb": 16.2,
+        "active_rss_mb": 26.5,
+        "delta_mb": 10.3
+      },
+      "Native-Go": {
+        "idle_rss_mb": 12.1,
+        "active_rss_mb": 28.4,
+        "delta_mb": 16.3
+      },
+      "Docker-Go": {
+        "idle_rss_mb": 24.5,
+        "active_rss_mb": 42.6,
+        "delta_mb": 18.1
+      },
+      "Native-Python": {
+        "idle_rss_mb": 85.3,
+        "active_rss_mb": 162.0,
+        "delta_mb": 76.7
+      },
+      "Docker-Python": {
+        "idle_rss_mb": 138.2,
+        "active_rss_mb": 248.6,
+        "delta_mb": 110.4
+      }
+    },
+    "arm64": {
+      "WasmEdge": {
+        "idle_rss_mb": 6.8,
+        "active_rss_mb": 13.2,
+        "delta_mb": 6.4
+      },
+      "Wasmtime": {
+        "idle_rss_mb": 14.9,
+        "active_rss_mb": 24.1,
+        "delta_mb": 9.2
+      },
+      "Native-Go": {
+        "idle_rss_mb": 10.5,
+        "active_rss_mb": 24.8,
+        "delta_mb": 14.3
+      },
+      "Docker-Go": {
+        "idle_rss_mb": 21.8,
+        "active_rss_mb": 38.2,
+        "delta_mb": 16.4
+      },
+      "Native-Python": {
+        "idle_rss_mb": 78.4,
+        "active_rss_mb": 148.5,
+        "delta_mb": 70.1
+      },
+      "Docker-Python": {
+        "idle_rss_mb": 124.0,
+        "active_rss_mb": 224.5,
+        "delta_mb": 100.5
+      }
+    }
+  },
+  "throughput_concurrency_scaling": {
+    "concurrency_levels": [
+      100,
+      500,
+      1000,
+      2500,
+      5000,
+      10000
+    ],
+    "x86_64": {
+      "WasmEdge": {
+        "rps": [
+          142.5,
+          485.0,
+          892.4,
+          1540.2,
+          1920.0,
+          2085.0
+        ],
+        "p50_ms": [
+          6.8,
+          7.2,
+          8.4,
+          11.2,
+          18.5,
+          29.4
+        ],
+        "p95_ms": [
+          10.2,
+          11.8,
+          14.5,
+          21.0,
+          36.8,
+          62.0
+        ],
+        "p99_ms": [
+          14.5,
+          17.0,
+          22.4,
+          34.5,
+          58.2,
+          98.5
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.01,
+          0.04,
+          0.12
+        ]
+      },
+      "Wasmtime": {
+        "rps": [
+          128.0,
+          430.0,
+          785.0,
+          1320.0,
+          1680.0,
+          1810.0
+        ],
+        "p50_ms": [
+          7.6,
+          8.1,
+          9.6,
+          13.5,
+          22.0,
+          35.8
+        ],
+        "p95_ms": [
+          11.8,
+          13.5,
+          17.2,
+          26.4,
+          45.0,
+          74.5
+        ],
+        "p99_ms": [
+          16.2,
+          19.5,
+          26.0,
+          42.0,
+          71.0,
+          118.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.01,
+          0.06,
+          0.18
+        ]
+      },
+      "Native-Go": {
+        "rps": [
+          136.0,
+          460.0,
+          840.0,
+          1450.0,
+          1820.0,
+          1960.0
+        ],
+        "p50_ms": [
+          7.1,
+          7.5,
+          8.9,
+          12.1,
+          20.2,
+          32.5
+        ],
+        "p95_ms": [
+          10.9,
+          12.4,
+          15.6,
+          23.2,
+          40.5,
+          68.0
+        ],
+        "p99_ms": [
+          15.1,
+          18.0,
+          24.1,
+          37.8,
+          64.0,
+          106.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.0,
+          0.02,
+          0.05,
+          0.15
+        ]
+      },
+      "Docker-Go": {
+        "rps": [
+          122.0,
+          410.0,
+          740.0,
+          1260.0,
+          1540.0,
+          1650.0
+        ],
+        "p50_ms": [
+          8.0,
+          8.6,
+          10.4,
+          14.8,
+          25.4,
+          42.0
+        ],
+        "p95_ms": [
+          12.5,
+          14.6,
+          19.0,
+          29.5,
+          52.0,
+          88.0
+        ],
+        "p99_ms": [
+          17.8,
+          21.5,
+          29.4,
+          48.0,
+          82.0,
+          139.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.01,
+          0.03,
+          0.09,
+          0.28
+        ]
+      },
+      "Native-Python": {
+        "rps": [
+          88.0,
+          280.0,
+          480.0,
+          740.0,
+          850.0,
+          890.0
+        ],
+        "p50_ms": [
+          11.2,
+          12.8,
+          16.4,
+          25.8,
+          48.0,
+          82.5
+        ],
+        "p95_ms": [
+          18.4,
+          22.0,
+          31.5,
+          54.0,
+          98.0,
+          168.0
+        ],
+        "p99_ms": [
+          26.0,
+          32.5,
+          48.0,
+          86.0,
+          156.0,
+          275.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.02,
+          0.08,
+          0.35,
+          1.15
+        ]
+      },
+      "Docker-Python": {
+        "rps": [
+          74.0,
+          235.0,
+          395.0,
+          590.0,
+          680.0,
+          710.0
+        ],
+        "p50_ms": [
+          13.4,
+          15.5,
+          20.2,
+          33.5,
+          62.0,
+          108.0
+        ],
+        "p95_ms": [
+          22.0,
+          27.2,
+          40.0,
+          72.0,
+          134.0,
+          228.0
+        ],
+        "p99_ms": [
+          31.5,
+          40.0,
+          62.0,
+          115.0,
+          215.0,
+          380.0
+        ],
+        "error_rate": [
+          0.0,
+          0.01,
+          0.04,
+          0.16,
+          0.72,
+          2.4
+        ]
+      }
+    },
+    "arm64": {
+      "WasmEdge": {
+        "rps": [
+          38.5,
+          118.0,
+          212.0,
+          335.0,
+          395.0,
+          415.0
+        ],
+        "p50_ms": [
+          25.4,
+          27.0,
+          31.8,
+          46.5,
+          78.0,
+          128.0
+        ],
+        "p95_ms": [
+          38.0,
+          42.5,
+          52.0,
+          79.0,
+          142.0,
+          235.0
+        ],
+        "p99_ms": [
+          54.0,
+          61.0,
+          78.0,
+          124.0,
+          220.0,
+          370.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.01,
+          0.04,
+          0.12,
+          0.45
+        ]
+      },
+      "Wasmtime": {
+        "rps": [
+          32.0,
+          98.0,
+          175.0,
+          270.0,
+          320.0,
+          335.0
+        ],
+        "p50_ms": [
+          30.5,
+          32.8,
+          38.5,
+          58.0,
+          98.0,
+          162.0
+        ],
+        "p95_ms": [
+          46.0,
+          51.5,
+          64.0,
+          98.0,
+          178.0,
+          295.0
+        ],
+        "p99_ms": [
+          65.0,
+          74.0,
+          96.0,
+          154.0,
+          278.0,
+          460.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.02,
+          0.06,
+          0.19,
+          0.68
+        ]
+      },
+      "Native-Go": {
+        "rps": [
+          34.0,
+          105.0,
+          190.0,
+          298.0,
+          350.0,
+          365.0
+        ],
+        "p50_ms": [
+          28.6,
+          30.5,
+          35.4,
+          52.0,
+          88.0,
+          145.0
+        ],
+        "p95_ms": [
+          42.5,
+          47.0,
+          58.0,
+          88.0,
+          160.0,
+          265.0
+        ],
+        "p99_ms": [
+          60.0,
+          68.0,
+          87.0,
+          138.0,
+          248.0,
+          415.0
+        ],
+        "error_rate": [
+          0.0,
+          0.0,
+          0.01,
+          0.05,
+          0.15,
+          0.55
+        ]
+      },
+      "Docker-Go": {
+        "rps": [
+          29.5,
+          91.0,
+          162.0,
+          252.0,
+          295.0,
+          308.0
+        ],
+        "p50_ms": [
+          33.2,
+          36.0,
+          42.5,
+          64.0,
+          108.0,
+          180.0
+        ],
+        "p95_ms": [
+          50.0,
+          56.5,
+          71.0,
+          110.0,
+          198.0,
+          330.0
+        ],
+        "p99_ms": [
+          72.0,
+          82.0,
+          108.0,
+          175.0,
+          310.0,
+          520.0
+        ],
+        "error_rate": [
+          0.0,
+          0.01,
+          0.03,
+          0.09,
+          0.28,
+          0.95
+        ]
+      },
+      "Native-Python": {
+        "rps": [
+          18.2,
+          54.0,
+          92.0,
+          138.0,
+          158.0,
+          164.0
+        ],
+        "p50_ms": [
+          54.0,
+          60.5,
+          75.0,
+          118.0,
+          205.0,
+          345.0
+        ],
+        "p95_ms": [
+          85.0,
+          98.0,
+          126.0,
+          210.0,
+          380.0,
+          640.0
+        ],
+        "p99_ms": [
+          122.0,
+          145.0,
+          192.0,
+          335.0,
+          610.0,
+          1020.0
+        ],
+        "error_rate": [
+          0.0,
+          0.02,
+          0.07,
+          0.25,
+          0.85,
+          2.9
+        ]
+      },
+      "Docker-Python": {
+        "rps": [
+          14.8,
+          43.5,
+          72.0,
+          106.0,
+          120.0,
+          125.0
+        ],
+        "p50_ms": [
+          66.5,
+          75.0,
+          95.0,
+          154.0,
+          272.0,
+          455.0
+        ],
+        "p95_ms": [
+          108.0,
+          125.0,
+          164.0,
+          275.0,
+          505.0,
+          850.0
+        ],
+        "p99_ms": [
+          155.0,
+          185.0,
+          248.0,
+          440.0,
+          810.0,
+          1360.0
+        ],
+        "error_rate": [
+          0.0,
+          0.03,
+          0.12,
+          0.48,
+          1.65,
+          5.2
+        ]
+      }
+    }
+  },
+  "energy": {
+    "x86_64": {
+      "WasmEdge": {
+        "energy_joules_1k": 199.3,
+        "avg_power_w": 28.4,
+        "inferences_per_joule": 5.02
+      },
+      "Wasmtime": {
+        "energy_joules_1k": 248.4,
+        "avg_power_w": 31.8,
+        "inferences_per_joule": 4.03
+      },
+      "Native-Go": {
+        "energy_joules_1k": 244.1,
+        "avg_power_w": 33.2,
+        "inferences_per_joule": 4.1
+      },
+      "Docker-Go": {
+        "energy_joules_1k": 299.2,
+        "avg_power_w": 36.5,
+        "inferences_per_joule": 3.34
+      },
+      "Native-Python": {
+        "energy_joules_1k": 531.8,
+        "avg_power_w": 46.8,
+        "inferences_per_joule": 1.88
+      },
+      "Docker-Python": {
+        "energy_joules_1k": 732.4,
+        "avg_power_w": 54.2,
+        "inferences_per_joule": 1.37
+      }
+    },
+    "arm64": {
+      "WasmEdge": {
+        "energy_joules_1k": 106.5,
+        "avg_power_w": 4.1,
+        "inferences_per_joule": 9.39
+      },
+      "Wasmtime": {
+        "energy_joules_1k": 143.8,
+        "avg_power_w": 4.6,
+        "inferences_per_joule": 6.95
+      },
+      "Native-Go": {
+        "energy_joules_1k": 141.2,
+        "avg_power_w": 4.8,
+        "inferences_per_joule": 7.08
+      },
+      "Docker-Go": {
+        "energy_joules_1k": 176.3,
+        "avg_power_w": 5.2,
+        "inferences_per_joule": 5.67
+      },
+      "Native-Python": {
+        "energy_joules_1k": 335.2,
+        "avg_power_w": 6.1,
+        "inferences_per_joule": 2.98
+      },
+      "Docker-Python": {
+        "energy_joules_1k": 459.5,
+        "avg_power_w": 6.8,
+        "inferences_per_joule": 2.18
+      }
+    }
+  }
+}

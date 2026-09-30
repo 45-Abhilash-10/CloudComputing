@@ -1,0 +1,45 @@
+version: '3.8'
+
+# x86_64 Cloud Instance Deployment (AWS EC2 c6i.xlarge - Intel Xeon Ice Lake)
+# High-concurrency throughput testing configuration
+
+services:
+  docker-go-x86:
+    build:
+      context: ../services/docker-go
+      dockerfile: Dockerfile
+    image: mobilenetv2-go:amd64
+    container_name: ec2-docker-go
+    platform: linux/amd64
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - GOMAXPROCS=4
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 1024M
+    restart: always
+
+  docker-python-x86:
+    build:
+      context: ../services/docker-python
+      dockerfile: Dockerfile
+    image: mobilenetv2-python:amd64
+    platform: linux/amd64
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+      - NUM_THREADS=4
+      - OMP_NUM_THREADS=4
+    volumes:
+      - ../models:/models:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 2048M
+    restart: always
