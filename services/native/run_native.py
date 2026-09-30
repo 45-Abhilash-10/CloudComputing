@@ -13,11 +13,12 @@ import json
 import psutil
 import platform
 import argparse
+from typing import Any
 import numpy as np
 from PIL import Image
 
 try:
-    import onnxruntime as ort
+    import onnxruntime as ort  # type: ignore
 except ImportError:
     ort = None
 
@@ -34,8 +35,8 @@ class NativeClassifier:
     def __init__(self, model_path: str = DEFAULT_MODEL, labels_path: str = DEFAULT_LABELS):
         self.model_path = model_path
         self.labels_path = labels_path
-        self.session = None
-        self.labels = []
+        self.session: Any = None
+        self.labels: list[str] = []
         self._load()
 
     def _load(self):
@@ -81,15 +82,17 @@ class NativeClassifier:
         t_pre = (time.perf_counter() - t0) * 1000
 
         t1 = time.perf_counter()
-        if self.session != "simulated":
-            inp_name = self.session.get_inputs()[0].name
-            out_name = self.session.get_outputs()[0].name
-            raw = self.session.run([out_name], {inp_name: tensor})[0]
+        if self.session is not None and self.session != "simulated":
+            sess: Any = self.session
+            inp_name = sess.get_inputs()[0].name
+            out_name = sess.get_outputs()[0].name
+            outputs_list = sess.run([out_name], {inp_name: tensor})
+            raw = np.asarray(outputs_list[0], dtype=np.float32)
         else:
             r_avg = float(np.mean(tensor[0, 0, :, :]))
             g_avg = float(np.mean(tensor[0, 1, :, :]))
             b_avg = float(np.mean(tensor[0, 2, :, :]))
-            logits = np.sin(np.arange(1000) * 0.137) * 0.5
+            logits = np.sin(np.arange(1000, dtype=np.float32) * 0.137) * 0.5
             if r_avg > b_avg and r_avg > g_avg:
                 logits[817] += 5.2 + (r_avg * 1.5)
                 logits[511] += 3.8
@@ -103,7 +106,8 @@ class NativeClassifier:
         t_infer = (time.perf_counter() - t1) * 1000
 
         # Softmax
-        e_x = np.exp(raw - np.max(raw, axis=-1, keepdims=True))
+        raw_arr = np.asarray(raw, dtype=np.float32)
+        e_x = np.exp(raw_arr - np.max(raw_arr, axis=-1, keepdims=True))
         probs = (e_x / np.sum(e_x, axis=-1, keepdims=True))[0]
 
         top_indices = np.argsort(probs)[::-1][:top_k]
@@ -218,10 +222,14 @@ def run_cli_benchmark(image_path: str, iterations: int = 10):
         classifier.predict(img_bytes)
 
     latencies = []
+    res: dict[str, Any] = {}
     print(f"Running {iterations} benchmark iterations...")
-    for i in range(iterations):
+    for _ in range(iterations):
         res = classifier.predict(img_bytes)
         latencies.append(res["telemetry"]["inference_time_ms"])
+
+    if not res:
+        res = classifier.predict(img_bytes)
 
     latencies = np.array(latencies)
     print("\n=== Native Python Benchmark Results ===")

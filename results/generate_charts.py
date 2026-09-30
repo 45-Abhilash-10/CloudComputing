@@ -14,6 +14,7 @@ Outputs to both results/figures/ and paper/figures/.
 import os
 import sys
 import json
+from typing import Any
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -239,7 +240,8 @@ def plot_tradeoff_radar(data):
         "Docker-Python": [20, 35, 45, 38, 30]
     }
 
-    fig, ax = plt.subplots(figsize=(6.5, 6.5), subplot_kw=dict(polar=True))
+    fig, ax_sub = plt.subplots(figsize=(6.5, 6.5), subplot_kw=dict(polar=True))
+    ax: Any = ax_sub
     plt.xticks(angles[:-1], categories, color="black", size=10)
     ax.set_rlabel_position(0)
     plt.yticks([25, 50, 75, 100], ["25", "50", "75", "100"], color="grey", size=8)

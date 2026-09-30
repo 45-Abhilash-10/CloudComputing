@@ -6,18 +6,17 @@ percentile calculations (p50, p90, p95, p99, p99.9), RPS throughput, and error a
 Requires no external tools (works out-of-the-box with standard Python 3).
 """
 
+import argparse
+import asyncio
+import json
 import os
 import sys
 import time
-import json
-import asyncio
-import platform
-import argparse
-from typing import Dict, Any, List
-import urllib.request
 import urllib.error
+import urllib.request
+from typing import Any
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAMPLE_IMAGE = os.path.join(BASE_DIR, "models", "sample_images", "tabby_cat.jpg")
 
 
@@ -28,7 +27,7 @@ class AsyncLoadTester:
         with open(sample_image, "rb") as f:
             self.image_bytes = f.read()
 
-    def send_single_sync_request(self) -> Dict[str, Any]:
+    def send_single_sync_request(self) -> dict[str, Any]:
         """Sends a synchronous request with multipart/form-data."""
         boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
         body = []
@@ -53,15 +52,15 @@ class AsyncLoadTester:
         try:
             with urllib.request.urlopen(req, timeout=10.0) as resp:
                 status = resp.status
-                data = resp.read()
+                resp.read()
                 t1 = time.perf_counter_ns()
                 latency_ms = (t1 - t0) / 1_000_000.0
                 return {"success": status == 200, "latency_ms": latency_ms, "error": None}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             t1 = time.perf_counter_ns()
             return {"success": False, "latency_ms": (t1 - t0) / 1_000_000.0, "error": str(e)}
 
-    async def worker(self, queue: asyncio.Queue, results: List[Dict[str, Any]]):
+    async def worker(self, queue: asyncio.Queue, results: list[dict[str, Any]]):
         loop = asyncio.get_running_loop()
         while not queue.empty():
             try:
@@ -73,12 +72,12 @@ class AsyncLoadTester:
             results.append(res)
             queue.task_done()
 
-    async def run_benchmark(self, total_requests: int = 100, concurrency: int = 20) -> Dict[str, Any]:
+    async def run_benchmark(self, total_requests: int = 100, concurrency: int = 20) -> dict[str, Any]:
         queue = asyncio.Queue()
         for i in range(total_requests):
             await queue.put(i)
 
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         workers = [asyncio.create_task(self.worker(queue, results)) for _ in range(concurrency)]
 
         t_start = time.perf_counter()
@@ -132,10 +131,10 @@ def main():
     parser.add_argument("--output", type=str, default="", help="JSON output file")
     args = parser.parse_args()
 
-    print(f"\n=========================================================================")
-    print(f" Synthetic Concurrency Benchmark: {args.target_url}")
+    print("\n=========================================================================")
+    print(f" Synthetic Concurrency Benchmark: {args.url}")
     print(f" Total Requests: {args.requests} | Concurrency: {args.concurrency}")
-    print(f"=========================================================================")
+    print("=========================================================================")
 
     tester = AsyncLoadTester(args.url)
     results = asyncio.run(tester.run_benchmark(total_requests=args.requests, concurrency=args.concurrency))

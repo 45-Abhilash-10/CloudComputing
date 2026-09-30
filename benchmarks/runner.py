@@ -6,23 +6,28 @@ and hardware architectures (x86_64 Cloud vs ARM64 Edge).
 Aggregates Cold Start, Memory Footprint, Throughput (RPS) Scaling, and Energy Consumption (Joules).
 """
 
+import argparse
+import json
 import os
+import platform
 import sys
 import time
-import json
-import platform
-import argparse
-from typing import Dict, Any, List
+from typing import Any
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, "benchmarks", "telemetry"))
 
-from cold_start import ColdStartProfiler
-from memory_tracker import MemoryTracker
-from energy_meter import EnergyMeter
+try:
+    from benchmarks.telemetry.cold_start import ColdStartProfiler
+    from benchmarks.telemetry.energy_meter import EnergyMeter
+    from benchmarks.telemetry.memory_tracker import MemoryTracker
+except ImportError:
+    from cold_start import ColdStartProfiler  # type: ignore
+    from energy_meter import EnergyMeter  # type: ignore
+    from memory_tracker import MemoryTracker  # type: ignore
 
 
-def generate_comprehensive_dataset() -> Dict[str, Any]:
+def generate_comprehensive_dataset() -> dict[str, Any]:
     """
     Constructs the canonical cross-architecture empirical dataset matching
     real-world hardware evaluation across AWS c6i.xlarge (x86_64) and Raspberry Pi 4 (ARM64).

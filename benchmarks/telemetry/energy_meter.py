@@ -9,13 +9,11 @@ Supports:
   4. Cross-platform fallback for Windows / macOS development environments
 """
 
-import os
-import sys
-import time
-import json
-import platform
 import argparse
-from typing import Dict, Any, List
+import json
+import os
+import platform
+from typing import Any
 
 
 class EnergyMeter:
@@ -35,7 +33,7 @@ class EnergyMeter:
                 return -1
         return -1
 
-    def calculate_energy(self, runtime: str, num_inferences: int = 1000, duration_seconds: float = 10.0) -> Dict[str, Any]:
+    def calculate_energy(self, runtime: str, num_inferences: int = 1000, duration_seconds: float = 10.0) -> dict[str, Any]:
         """
         Calculates energy in Joules and Inferences Per Joule.
         Uses RAPL if available, otherwise uses empirical physical power models:
@@ -108,7 +106,7 @@ class EnergyMeter:
             "measurement_source": "Intel-RAPL" if self.has_rapl else "Empirical-Hardware-Power-Model"
         }
 
-    def benchmark_all_runtimes(self, num_inferences: int = 1000) -> List[Dict[str, Any]]:
+    def benchmark_all_runtimes(self, num_inferences: int = 1000) -> list[dict[str, Any]]:
         runtimes = ["WasmEdge", "Wasmtime", "Native-Go", "Docker-Go", "Native-Python", "Docker-Python"]
         return [self.calculate_energy(r, num_inferences=num_inferences) for r in runtimes]
 
@@ -120,10 +118,10 @@ def main():
     args = parser.parse_args()
 
     meter = EnergyMeter()
-    print(f"\n=========================================================================")
+    print("\n=========================================================================")
     print(f" CPU Energy Consumption & Green AI Efficiency ({platform.machine()})")
     print(f" Benchmark: {args.inferences} MobileNetV2 Inferences | E = integral P(t) dt")
-    print(f"=========================================================================")
+    print("=========================================================================")
 
     results = meter.benchmark_all_runtimes(num_inferences=args.inferences)
     print(f"{'Runtime':<16} | {'Energy (Joules)':<16} | {'Avg Power (W)':<14} | {'Inf / Joule':<14} | {'Energy Efficiency':<20}")

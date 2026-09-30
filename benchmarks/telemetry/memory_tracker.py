@@ -5,14 +5,13 @@ Samples Resident Set Size (RSS), Virtual Memory Size (VMS), and peak allocated p
 Distinguishes between Idle state (server listening) and Active state (MobileNetV2 inference under load).
 """
 
-import os
-import sys
-import time
-import json
-import psutil
-import platform
 import argparse
-from typing import Dict, Any, List
+import json
+import platform
+import time
+from typing import Any
+
+import psutil
 
 
 class MemoryTracker:
@@ -20,7 +19,7 @@ class MemoryTracker:
         self.arch = platform.machine()
         self.is_arm = ("arm" in self.arch.lower() or "aarch64" in self.arch.lower())
 
-    def get_empirical_memory_matrix(self) -> List[Dict[str, Any]]:
+    def get_empirical_memory_matrix(self) -> list[dict[str, Any]]:
         """
         Returns empirical memory telemetry across runtimes for both x86_64 and ARM64.
         Reflects linear memory sandbox in Wasm vs container cgroups and runtime overhead.
@@ -99,7 +98,7 @@ class MemoryTracker:
 
         return results
 
-    def track_pid(self, pid: int, duration_sec: float = 5.0, interval_sec: float = 0.2) -> Dict[str, Any]:
+    def track_pid(self, pid: int, duration_sec: float = 5.0, interval_sec: float = 0.2) -> dict[str, Any]:
         """Samples RSS and VMS of a specific active PID over a time window."""
         try:
             proc = psutil.Process(pid)
@@ -151,9 +150,9 @@ def main():
         res = tracker.track_pid(args.pid, args.duration)
         print(json.dumps(res, indent=2))
     else:
-        print(f"\n=========================================================================")
+        print("\n=========================================================================")
         print(f" Memory Footprint Analysis: Idle vs Active ({platform.machine()})")
-        print(f"=========================================================================")
+        print("=========================================================================")
         matrix = tracker.get_empirical_memory_matrix()
         print(f"{'Runtime':<16} | {'Idle RSS (MB)':<14} | {'Active RSS (MB)':<16} | {'Memory Savings vs Docker-Py':<28}")
         print("-" * 80)

@@ -6,14 +6,14 @@ to the delivery of the first valid MobileNetV2 inference classification.
 Supports Native, Docker-Go, Docker-Python, WasmEdge, and Wasmtime runtimes.
 """
 
+import argparse
+import json
 import os
+import platform
+import subprocess
 import sys
 import time
-import json
-import subprocess
-import platform
-import argparse
-from typing import Dict, Any, List
+from typing import Any
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SAMPLE_IMAGE = os.path.join(BASE_DIR, "models", "sample_images", "tabby_cat.jpg")
@@ -25,7 +25,7 @@ class ColdStartProfiler:
         self.arch = platform.machine()
         self.os_type = platform.system()
 
-    def profile_native_python(self) -> Dict[str, Any]:
+    def profile_native_python(self) -> dict[str, Any]:
         """Measures cold start of native Python interpreter + ONNX Runtime."""
         script_path = os.path.join(BASE_DIR, "services", "native", "run_native.py")
         cmd = [sys.executable, script_path, "--bench", "--iter", "1", "--image", self.sample_image]
@@ -45,7 +45,7 @@ class ColdStartProfiler:
             "stdout_preview": proc.stdout[:200].strip() if success else proc.stderr[:200].strip()
         }
 
-    def profile_native_go(self) -> Dict[str, Any]:
+    def profile_native_go(self) -> dict[str, Any]:
         """Measures cold start of native compiled Go binary."""
         go_file = os.path.join(BASE_DIR, "services", "native", "run_native_go.go")
         bin_name = "run_native_go.exe" if self.os_type == "Windows" else "run_native_go"
@@ -90,7 +90,7 @@ class ColdStartProfiler:
                 "calibrated_empirical": True
             }
 
-    def profile_wasm(self, runtime_name: str = "WasmEdge") -> Dict[str, Any]:
+    def profile_wasm(self, runtime_name: str = "WasmEdge") -> dict[str, Any]:
         """
         Measures cold-start latency of WebAssembly runtime.
         Wasm startup involves JIT/AOT memory initialization and sandbox instantiation.
@@ -139,7 +139,7 @@ class ColdStartProfiler:
                 "calibrated_empirical": True
             }
 
-    def profile_docker(self, service_type: str = "go") -> Dict[str, Any]:
+    def profile_docker(self, service_type: str = "go") -> dict[str, Any]:
         """
         Measures OCI Docker container cold start:
         `docker run --rm <image>` spinup + network init + first inference.
@@ -164,7 +164,7 @@ class ColdStartProfiler:
             "calibrated_empirical": True
         }
 
-    def profile_all(self, trials: int = 3) -> List[Dict[str, Any]]:
+    def profile_all(self, trials: int = 3) -> list[dict[str, Any]]:
         results = []
         runtimes = [
             ("Native-Python", lambda: self.profile_native_python()),
@@ -198,9 +198,9 @@ def main():
     args = parser.parse_args()
 
     profiler = ColdStartProfiler()
-    print(f"\n=======================================================")
+    print("\n=======================================================")
     print(f" Cold-Start Latency Profiler ({platform.machine()} - {platform.system()})")
-    print(f"=======================================================")
+    print("=======================================================")
     
     results = profiler.profile_all(trials=args.trials)
     

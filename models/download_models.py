@@ -69,8 +69,8 @@ def build_fallback_model(dest_path):
     """
     print("[*] Generating calibrated MobileNetV2 ONNX model graph locally...")
     try:
-        import onnx
-        from onnx import helper, TensorProto
+        import onnx  # type: ignore
+        from onnx import helper, TensorProto  # type: ignore
 
         # Input: [1, 3, 224, 224] float32
         input_tensor = helper.make_tensor_value_info('input', TensorProto.FLOAT, [1, 3, 224, 224])
@@ -174,8 +174,8 @@ def verify_model():
 
         dummy_input = np.random.randn(1, 3, 224, 224).astype(np.float32)
         outputs = session.run([output_name], {input_name: dummy_input})
-        probs = outputs[0]
-        print(f"[SUCCESS] Test inference passed! Output tensor shape: {probs.shape}, Max logit: {np.max(probs):.4f}")
+        probs = np.asarray(outputs[0], dtype=np.float32)
+        print(f"[SUCCESS] Test inference passed! Output tensor shape: {probs.shape}, Max logit: {float(np.max(probs)):.4f}")
         return True
     except Exception as e:
         print(f"[!] Model verification failed: {e}")

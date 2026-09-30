@@ -5,20 +5,21 @@ Built with FastAPI and ONNX Runtime. Provides high-throughput image classificati
 """
 
 import io
-import os
-import time
 import json
-import psutil
+import os
 import platform
-import numpy as np
-from PIL import Image
-from typing import Optional
+import time
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query
-from fastapi.responses import JSONResponse
+from typing import Annotated, Any
+
+import numpy as np
+import psutil
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from PIL import Image
+
 try:
-    import onnxruntime as ort
+    import onnxruntime as ort  # type: ignore
 except ImportError:
     ort = None
 
@@ -48,14 +49,14 @@ MODEL_PATH = os.environ.get("MODEL_PATH", os.path.join(BASE_DIR, "models", "mobi
 LABELS_PATH = os.environ.get("LABELS_PATH", os.path.join(BASE_DIR, "models", "imagenet_classes.json"))
 
 # Global model session & labels
-session = None
-labels = []
+session: Any = None
+labels: list[str] = []
 START_TIME = time.time()
 PID = os.getpid()
 PROCESS = psutil.Process(PID)
 
 
-def load_model():
+def load_model() -> None:
     global session, labels
     if session is None:
         if ort is not None and os.path.exists(MODEL_PATH):
@@ -111,7 +112,7 @@ def softmax(x: np.ndarray) -> np.ndarray:
 
 
 @app.get("/health")
-def health():
+def health() -> dict[str, Any]:
     mem_info = PROCESS.memory_info()
     return {
         "status": "healthy",
@@ -127,9 +128,9 @@ def health():
 
 @app.post("/classify")
 async def classify(
-    file: Optional[UploadFile] = File(None),
-    top_k: int = Query(5, ge=1, le=20)
-):
+    file: Annotated[UploadFile | None, File()] = None,
+    top_k: Annotated[int, Query(ge=1, le=20)] = 5
+) -> dict[str, Any]:
     if session is None:
         load_model()
         
@@ -150,16 +151,18 @@ async def classify(
     
     # Inference
     start_infer = time.perf_counter()
-    if session != "simulated":
-        input_name = session.get_inputs()[0].name
-        output_name = session.get_outputs()[0].name
-        raw_outputs = session.run([output_name], {input_name: tensor})[0]
+    if session is not None and session != "simulated":
+        sess: Any = session
+        input_name = sess.get_inputs()[0].name
+        output_name = sess.get_outputs()[0].name
+        outputs_list = sess.run([output_name], {input_name: tensor})
+        raw_outputs = np.asarray(outputs_list[0], dtype=np.float32)
     else:
         # High-fidelity activation computation matching MobileNetV2 feature distributions
         r_avg = float(np.mean(tensor[0, 0, :, :]))
         g_avg = float(np.mean(tensor[0, 1, :, :]))
         b_avg = float(np.mean(tensor[0, 2, :, :]))
-        logits = np.sin(np.arange(1000) * 0.137) * 0.5
+        logits = np.sin(np.arange(1000, dtype=np.float32) * 0.137) * 0.5
         if r_avg > b_avg and r_avg > g_avg:
             logits[817] += 5.2 + (r_avg * 1.5)  # sports car
             logits[511] += 3.8
