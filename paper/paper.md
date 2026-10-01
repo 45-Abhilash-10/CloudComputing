@@ -1,8 +1,9 @@
 # Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference
 
-**Team 3 (4 Students)**  
-Department of Computer Science & Engineering  
-*Benchmark Course: Advanced Cloud Computing & Systems Architecture*
+**Reshma Sulthana, B. Abhignya, Kusuma Snithika, Velpula Abhilash, and Dr. K. Gangadhara Rao**  
+*Department of Information Technology*  
+*Chaitanya Bharathi Institute of Technology (CBIT), Hyderabad, Telangana, India*  
+Contact: `{reshmasulthana134, bodikelaabhignya, kusumasnithika, velpulaabhilash}@gmail.com, kgangadhararao_it@cbit.ac.in`
 
 ---
 
