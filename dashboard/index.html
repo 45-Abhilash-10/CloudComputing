@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference</title>
-  <meta name="description" content="Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference (MobileNetV2 on x86_64 vs ARM64).">
+  <title>Edge-Cloud AI Inference & Platform Benchmark</title>
+  <meta name="description" content="Image upload and AI inference prediction with cross-platform benchmarks comparing WebAssembly and OCI containers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,36 +12,235 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-theme">
-  <!-- Top Navigation Header -->
+  <!-- Top Navigation Bar -->
   <header class="app-header" id="appHeader">
     <div class="header-container">
       <div class="brand">
-        <div class="brand-logo-badge">WASM vs OCI</div>
-        <div>
-          <h1 class="brand-title">Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference</h1>
-          <p class="brand-subtitle">Team 3 Research Platform &middot; Heterogeneous Hardware Evaluation (x86_64 vs ARM64)</p>
+        <div class="brand-logo-badge">AI BENCHMARK</div>
+        <div class="brand-info">
+          <h1 class="brand-title">Edge-Cloud AI Inference Platform</h1>
+          <p class="brand-subtitle">MobileNetV2 Inference &bull; WebAssembly vs OCI Containers</p>
         </div>
       </div>
-      <div class="header-controls">
-        <div class="arch-toggle-group" id="archToggleGroup" role="group" aria-label="Architecture selector">
-          <button class="toggle-btn active" id="btnArchAll" data-arch="all">Side-by-Side</button>
-          <button class="toggle-btn" id="btnArchX86" data-arch="x86_64">x86_64 (AWS EC2)</button>
-          <button class="toggle-btn" id="btnArchArm" data-arch="arm64">ARM64 (Raspberry Pi 4)</button>
-        </div>
-        <a href="/research_paper.pdf" target="_blank" class="nav-cta-btn" id="btnDownloadPaper" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(129, 140, 248, 0.4);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Research Paper (PDF)</a>
-        <a href="#playground" class="nav-cta-btn" id="btnNavPlayground">Live Playground</a>
-      </div>
+
+      <!-- Main Navigation Tabs (3 Clean Pages) -->
+      <nav class="nav-tabs-wrapper" id="mainNavTabs" role="tablist">
+        <button class="nav-tab-btn active" id="tabBtnPrediction" data-target="pagePrediction" role="tab" aria-selected="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
+          Image Prediction
+        </button>
+        <button class="nav-tab-btn" id="tabBtnPlatforms" data-target="pagePlatforms" role="tab" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Platform Comparison
+        </button>
+        <button class="nav-tab-btn" id="tabBtnArch" data-target="pageArch" role="tab" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+          Architecture Comparison
+        </button>
+      </nav>
     </div>
   </header>
 
   <main class="main-content">
-    <!-- Hero / Headline Summary -->
-    <section class="hero-section" id="heroSection">
-      <div class="hero-badge">Research Specification &middot; MobileNetV2 Image Classification</div>
-      <h2 class="hero-heading">Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference</h2>
-      <p class="hero-description">
-        Lightweight machine learning inference evaluation across heterogeneous architectures (<strong>x86_64 cloud instances</strong> e.g., AWS EC2 vs. <strong>ARM64 edge platforms</strong> e.g., Raspberry Pi 4 / AWS Graviton) comparing <strong>WasmEdge</strong> and <strong>Wasmtime</strong> against standard <strong>OCI Docker containers</strong> (Go & Python) and <strong>native bare-metal execution</strong>.
-      </p>
+    <!-- ================================================================= -->
+    <!-- PAGE 1: IMAGE UPLOAD AND PREDICTION                               -->
+    <!-- ================================================================= -->
+    <section class="page-view active" id="pagePrediction" role="tabpanel" aria-labelledby="tabBtnPrediction">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Image Upload & Real-Time Classification</h2>
+          <p class="view-subtitle">Upload an image or pick a sample to execute inference and measure performance metrics across runtimes.</p>
+        </div>
+        <div class="runtime-status-indicator">
+          <span class="status-dot pulsing"></span>
+          <span id="activeEngineStatus">Ready &bull; MobileNetV2 FP32</span>
+        </div>
+      </div>
+
+      <div class="prediction-grid">
+        <!-- Left: Image Upload & Setup -->
+        <div class="playground-panel glassmorphic" id="uploadPanel">
+          <div class="panel-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Select or Upload Test Image
+          </div>
+
+          <!-- Quick Samples -->
+          <div class="sample-selection-area">
+            <span class="sub-label">Quick Sample Images:</span>
+            <div class="sample-image-selector" id="sampleImageSelector">
+              <button class="sample-thumb-btn" data-img="models/sample_images/tabby_cat.jpg" data-label="Tabby Cat">
+                <img src="models/sample_images/tabby_cat.jpg" alt="Tabby Cat">
+                <span>Tabby Cat</span>
+              </button>
+              <button class="sample-thumb-btn" data-img="models/sample_images/golden_retriever.jpg" data-label="Golden Retriever">
+                <img src="models/sample_images/golden_retriever.jpg" alt="Golden Retriever">
+                <span>Golden Retriever</span>
+              </button>
+              <button class="sample-thumb-btn" data-img="models/sample_images/sports_car.jpg" data-label="Sports Car">
+                <img src="models/sample_images/sports_car.jpg" alt="Sports Car">
+                <span>Sports Car</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Box -->
+          <div class="file-dropzone" id="fileDropzone">
+            <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/webp" class="visually-hidden">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>Drag & drop image here, or <span class="highlight-text">browse files</span></p>
+            <span class="file-spec">JPG, PNG, WebP (224 &times; 224 input tensor normalization)</span>
+          </div>
+
+          <!-- Active Selected Image Preview Card (Shown once chosen) -->
+          <div class="active-image-preview-card" id="imagePreviewCard" style="display: none;">
+            <div class="preview-img-wrapper">
+              <img id="mainImagePreview" src="" alt="Selected Preview">
+            </div>
+            <div class="preview-meta">
+              <span class="preview-filename" id="previewFilename">No file selected</span>
+              <span class="preview-badge" id="previewBadge">Ready for prediction</span>
+            </div>
+          </div>
+
+          <!-- Runtime & Hardware Selector -->
+          <div class="form-row-grid">
+            <div class="runtime-picker">
+              <label for="runtimeSelect" class="form-label">Runtime Platform:</label>
+              <select id="runtimeSelect" class="styled-select">
+                <option value="WasmEdge" selected>WasmEdge (AOT + WASI-NN)</option>
+                <option value="Wasmtime">Wasmtime (Cranelift JIT)</option>
+                <option value="Docker-Go">Docker-Go (OCI Container)</option>
+                <option value="Docker-Python">Docker-Python (FastAPI Container)</option>
+                <option value="Native-Go">Native-Go (Bare Metal)</option>
+                <option value="Native-Python">Native-Python (ONNX Runtime)</option>
+              </select>
+            </div>
+
+            <div class="runtime-picker">
+              <label for="targetArchSelect" class="form-label">Hardware Target:</label>
+              <select id="targetArchSelect" class="styled-select">
+                <option value="x86_64" selected>x86_64 Cloud (AWS c6i.xlarge)</option>
+                <option value="arm64">ARM64 Edge (Raspberry Pi 4 / Graviton)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons-group">
+            <button class="primary-action-btn" id="btnRunInference">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run Prediction
+            </button>
+            <button class="secondary-action-btn" id="btnCompareAll">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+              Compare All Platforms
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Prediction Results & Telemetry -->
+        <div class="playground-panel glassmorphic" id="resultsPanel">
+          <div class="panel-section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Classification & Live Performance Telemetry
+          </div>
+
+          <!-- Empty State (Shown when no image has been processed yet) -->
+          <div class="results-empty-state" id="resultsEmptyState">
+            <div class="empty-icon-circle">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
+            </div>
+            <h4 class="empty-title">No Image Uploaded Yet</h4>
+            <p class="empty-desc">Select a quick sample image or upload your own file on the left, then click <strong>Run Prediction</strong> to generate classification results and runtime telemetry.</p>
+          </div>
+
+          <!-- Active Results Container (Shown ONLY when image is uploaded/run) -->
+          <div class="results-data-container" id="resultsDataContainer" style="display: none;">
+            <!-- 4 Telemetry Metrics -->
+            <div class="telemetry-bar" id="liveTelemetryBar">
+              <div class="telemetry-item">
+                <span class="item-label">Inference Latency</span>
+                <span class="item-val cyan-text" id="resInferTime">-- ms</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="item-label">Preprocess Time</span>
+                <span class="item-val" id="resPreTime">-- ms</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="item-label">Active Memory RSS</span>
+                <span class="item-val emerald-text" id="resMem">-- MB</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="item-label">Energy Consumed</span>
+                <span class="item-val amber-text" id="resEnergy">-- J</span>
+              </div>
+            </div>
+
+            <!-- Predictions List -->
+            <div class="predictions-wrapper" id="predictionsWrapper">
+              <div class="predictions-header">
+                <h4 class="predictions-title">Top-5 ImageNet Predictions</h4>
+                <span class="predictions-meta" id="predRuntimeTag">Platform: WasmEdge (x86_64)</span>
+              </div>
+              <div class="predictions-list" id="predictionsList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Instant Platform Comparison Section -->
+            <div class="comparison-summary-card" id="comparisonSummaryCard">
+              <h5 class="comp-title">Cross-Platform Telemetry for this Image:</h5>
+              <div class="comp-table-wrapper">
+                <table class="comp-mini-table">
+                  <thead>
+                    <tr>
+                      <th>Platform</th>
+                      <th>Inference Time</th>
+                      <th>Active Memory</th>
+                      <th>Energy</th>
+                      <th>Relative Speed</th>
+                    </tr>
+                  </thead>
+                  <tbody id="compMiniTableBody">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PAGE 2: PLATFORM COMPARISON & BENCHMARKS                          -->
+    <!-- ================================================================= -->
+    <section class="page-view" id="pagePlatforms" role="tabpanel" aria-labelledby="tabBtnPlatforms">
+      <div class="view-header">
+        <div>
+          <h2 class="view-title">Cross-Platform Telemetry & Performance Matrix</h2>
+          <p class="view-subtitle">Empirical performance comparison of WebAssembly (WasmEdge, Wasmtime) vs OCI Containers (Docker Go, Docker Python) and Native baselines.</p>
+        </div>
+        
+        <!-- Controls strictly scoped to Platform Comparison -->
+        <div class="platform-controls-group">
+          <!-- Architecture Selector -->
+          <div class="arch-toggle-group" id="archToggleGroup" role="group" aria-label="Architecture selector">
+            <button class="toggle-btn active" id="btnArchAll" data-arch="all">All Platforms</button>
+            <button class="toggle-btn" id="btnArchX86" data-arch="x86_64">x86_64 Cloud</button>
+            <button class="toggle-btn" id="btnArchArm" data-arch="arm64">ARM64 Edge</button>
+          </div>
+
+          <!-- Metric Filter Pills -->
+          <div class="filter-pills" id="metricFilterPills">
+            <button class="pill-btn active" data-metric="throughput">Throughput (RPS)</button>
+            <button class="pill-btn" data-metric="coldstart">Cold Start (ms)</button>
+            <button class="pill-btn" data-metric="memory">Memory (MB)</button>
+            <button class="pill-btn" data-metric="energy">Energy (Joules)</button>
+          </div>
+        </div>
+      </div>
 
       <!-- KPI Summary Cards -->
       <div class="kpi-grid" id="kpiGrid">
@@ -55,7 +254,7 @@
               <span class="kpi-value cyan-gradient" id="valColdStart">152x</span>
               <span class="kpi-badge positive">4.2 ms vs 640 ms</span>
             </div>
-            <span class="kpi-subtext">WasmEdge vs Docker-Python on x86_64</span>
+            <span class="kpi-subtext">WasmEdge vs Docker-Python</span>
           </div>
         </div>
 
@@ -69,7 +268,7 @@
               <span class="kpi-value emerald-gradient" id="valMemory">-94.1%</span>
               <span class="kpi-badge positive">14.8 MB active</span>
             </div>
-            <span class="kpi-subtext">Linear memory vs 248.6 MB container</span>
+            <span class="kpi-subtext">Linear Wasm vs Container</span>
           </div>
         </div>
 
@@ -83,7 +282,7 @@
               <span class="kpi-value violet-gradient" id="valRps">2,085</span>
               <span class="kpi-badge info">Inferences / Sec</span>
             </div>
-            <span class="kpi-subtext">Scales cleanly to 10,000 concurrent VUs</span>
+            <span class="kpi-subtext">Scales cleanly to 10k concurrent VUs</span>
           </div>
         </div>
 
@@ -101,136 +300,16 @@
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Project Specifications Accordion / Framework Grid -->
-    <section class="spec-section" id="projectSpecSection">
-      <div class="section-header">
-        <div>
-          <h3 class="section-title">Research Framework & Execution Specifications</h3>
-          <p class="section-subtitle">Core problem statement, methodology, execution steps, and evaluated baselines</p>
-        </div>
-      </div>
-
-      <div class="spec-grid">
-        <!-- 1. Executive Summary & Objective -->
-        <div class="spec-card glassmorphic" id="specCard1">
-          <div class="spec-card-header">
-            <span class="spec-num cyan">01</span>
-            <h4 class="spec-card-title">Executive Summary & Objective</h4>
-          </div>
-          <p class="spec-card-text">
-            Conducts an empirical comparative study between WebAssembly (Wasm) runtimes and standard OCI (Docker) containers. Evaluates lightweight machine learning inference across heterogeneous hardware architectures (x86_64 vs. ARM64).
-          </p>
-          <div class="spec-tags">
-            <span class="spec-tag">WasmEdge / Wasmtime</span>
-            <span class="spec-tag">OCI Containers</span>
-            <span class="spec-tag">x86_64 vs ARM64</span>
-          </div>
-        </div>
-
-        <!-- 2. Problem Statement -->
-        <div class="spec-card glassmorphic" id="specCard2">
-          <div class="spec-card-header">
-            <span class="spec-num rose">02</span>
-            <h4 class="spec-card-title">Problem Statement</h4>
-          </div>
-          <p class="spec-card-text">
-            While Docker containers are the industry standard for microservices, their resource footprint and startup latency bottleneck low-power edge devices. WebAssembly promises near-native speed and lightweight footprints, but lacks comprehensive cross-architecture benchmarks for AI workloads.
-          </p>
-          <div class="spec-tags">
-            <span class="spec-tag">Container Overhead</span>
-            <span class="spec-tag">Startup Latency</span>
-            <span class="spec-tag">Edge Bottlenecks</span>
-          </div>
-        </div>
-
-        <!-- 3. Proposed Novelty & Methodology -->
-        <div class="spec-card glassmorphic" id="specCard3">
-          <div class="spec-card-header">
-            <span class="spec-num emerald">03</span>
-            <h4 class="spec-card-title">Proposed Novelty & Methodology</h4>
-          </div>
-          <p class="spec-card-text">
-            &bull; Built functional REST microservices performing MobileNetV2 image classification in Rust/Wasm (WasmEdge/Wasmtime) and Go/Docker.<br>
-            &bull; Executed multi-platform benchmarking across x86_64 cloud instances (AWS EC2) and ARM64 edge platforms (Raspberry Pi 4 / AWS Graviton).
-          </p>
-          <div class="spec-tags">
-            <span class="spec-tag">MobileNetV2 REST</span>
-            <span class="spec-tag">AWS EC2 c6i</span>
-            <span class="spec-tag">Raspberry Pi 4</span>
-          </div>
-        </div>
-
-        <!-- 4. Implementation & Execution Steps -->
-        <div class="spec-card glassmorphic" id="specCard4">
-          <div class="spec-card-header">
-            <span class="spec-num violet">04</span>
-            <h4 class="spec-card-title">Implementation & Execution Steps</h4>
-          </div>
-          <ul class="spec-step-list">
-            <li><strong>Step 1:</strong> MobileNetV2 inference engine in WebAssembly (Rust/WasmEdge) & Docker (Go/Python).</li>
-            <li><strong>Step 2:</strong> Deployed services across local ARM64 (Raspberry Pi/Graviton) & x86_64 testbeds.</li>
-            <li><strong>Step 3:</strong> Configured load testing via JMeter/k6 scaling from 100 to 10,000 requests.</li>
-            <li><strong>Step 4:</strong> Host telemetry captured using perf, docker stats, and systemd timestamps.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- 5. Performance Metrics & Baselines Banner -->
-      <div class="metrics-banner glassmorphic" id="specCard5">
-        <div class="metrics-banner-header">
-          <span class="spec-num amber">05</span>
-          <div>
-            <h4 class="spec-card-title">Performance Metrics & Comparative Baselines</h4>
-            <p class="spec-sub">Standard OCI Docker Containers vs. Native Execution Baseline</p>
-          </div>
-        </div>
-        <div class="metrics-pill-grid">
-          <div class="metric-pill">
-            <span class="metric-dot cyan"></span>
-            <strong>Cold-Start Delay:</strong> Measured in sub-milliseconds (ms)
-          </div>
-          <div class="metric-pill">
-            <span class="metric-dot emerald"></span>
-            <strong>Memory Footprint:</strong> Idle & Active Resident Set Size (MB)
-          </div>
-          <div class="metric-pill">
-            <span class="metric-dot violet"></span>
-            <strong>Requests Per Second:</strong> High-concurrency throughput (RPS)
-          </div>
-          <div class="metric-pill">
-            <span class="metric-dot amber"></span>
-            <strong>CPU Energy:</strong> Integrated dynamic energy expenditure (Joules)
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive Visualizations Grid -->
-    <section class="analytics-section" id="analyticsSection">
-      <div class="section-header">
-        <div>
-          <h3 class="section-title">Telemetry & Multidimensional Comparisons</h3>
-          <p class="section-subtitle">Real-time metrics rendered across Cold Start, Memory, Throughput Scaling, and Energy</p>
-        </div>
-        <div class="filter-pills" id="metricFilterPills">
-          <button class="pill-btn active" data-metric="throughput">Throughput (RPS)</button>
-          <button class="pill-btn" data-metric="coldstart">Cold Start (ms)</button>
-          <button class="pill-btn" data-metric="memory">Memory (MB)</button>
-          <button class="pill-btn" data-metric="energy">Energy (Joules)</button>
-        </div>
-      </div>
-
+      <!-- Charts Grid -->
       <div class="charts-grid">
-        <!-- Main Concurrency Chart -->
+        <!-- Main Interactive Chart -->
         <div class="chart-card glassmorphic span-2" id="mainChartCard">
           <div class="chart-header">
             <div>
               <h4 class="chart-title" id="mainChartTitle">Throughput (RPS) vs Concurrency Scaling (100 to 10,000 VUs)</h4>
               <span class="chart-caption" id="mainChartSubtitle">Requests per second across runtimes under concurrent load</span>
             </div>
-            <div class="chart-legend-custom" id="customLegend"></div>
           </div>
           <div class="chart-canvas-container">
             <canvas id="mainChart"></canvas>
@@ -263,145 +342,309 @@
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Live Inference Playground & Tester -->
-    <section class="playground-section" id="playground">
-      <div class="section-header">
-        <div>
-          <h3 class="section-title">Live MobileNetV2 Inference Playground</h3>
-          <p class="section-subtitle">Select or upload an image to execute inference across runtime engines</p>
-        </div>
-        <div class="runtime-status-indicator">
-          <span class="status-dot pulsing"></span>
-          <span>Engine Active: Localhost / Emulated WASI-NN</span>
-        </div>
-      </div>
-
-      <div class="playground-layout">
-        <!-- Left: Image Selection & Controls -->
-        <div class="playground-panel glassmorphic" id="playgroundInputPanel">
-          <h4 class="panel-heading">1. Input Image & Test Payload</h4>
-          
-          <div class="sample-image-selector" id="sampleImageSelector">
-            <button class="sample-thumb-btn active" data-img="models/sample_images/tabby_cat.jpg" data-label="Tabby Cat">
-              <img src="models/sample_images/tabby_cat.jpg" alt="Tabby Cat">
-              <span>Tabby Cat</span>
-            </button>
-            <button class="sample-thumb-btn" data-img="models/sample_images/golden_retriever.jpg" data-label="Golden Retriever">
-              <img src="models/sample_images/golden_retriever.jpg" alt="Golden Retriever">
-              <span>Golden Retriever</span>
-            </button>
-            <button class="sample-thumb-btn" data-img="models/sample_images/sports_car.jpg" data-label="Sports Car">
-              <img src="models/sample_images/sports_car.jpg" alt="Sports Car">
-              <span>Sports Car</span>
-            </button>
+      <!-- Master Empirical Data Table -->
+      <div class="table-section-wrapper">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title">Master Empirical Platform Matrix</h3>
+            <p class="section-subtitle">Aggregated benchmark results comparing all 6 runtimes on x86_64 vs ARM64</p>
           </div>
-
-          <div class="file-dropzone" id="fileDropzone">
-            <input type="file" id="imageFileInput" accept="image/jpeg,image/png" class="visually-hidden">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <p>Drag & drop custom image, or <span class="highlight-text">browse</span></p>
-            <span class="file-spec">JPG, PNG (Auto-resized & normalized to 3x224x224)</span>
-          </div>
-
-          <div class="runtime-picker">
-            <label for="runtimeSelect" class="form-label">Target Runtime Environment:</label>
-            <select id="runtimeSelect" class="styled-select">
-              <option value="WasmEdge" selected>WasmEdge (AOT + WASI-NN)</option>
-              <option value="Wasmtime">Wasmtime (Cranelift JIT)</option>
-              <option value="Native-Go">Native-Go (Bare Metal)</option>
-              <option value="Docker-Go">Docker-Go (OCI Container)</option>
-              <option value="Native-Python">Native-Python (ONNX Runtime)</option>
-              <option value="Docker-Python">Docker-Python (FastAPI Container)</option>
-            </select>
-          </div>
-
-          <button class="primary-action-btn" id="btnRunInference">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run MobileNetV2 Inference
+          <button class="download-btn" id="btnExportCsv">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV Dataset
           </button>
         </div>
 
-        <!-- Right: Execution Telemetry & Predictions -->
-        <div class="playground-panel glassmorphic" id="playgroundResultPanel">
-          <h4 class="panel-heading">2. Telemetry & Top-5 ImageNet Predictions</h4>
-
-          <div class="telemetry-bar" id="liveTelemetryBar">
-            <div class="telemetry-item">
-              <span class="item-label">Inference Time</span>
-              <span class="item-val" id="resInferTime">-- ms</span>
-            </div>
-            <div class="telemetry-item">
-              <span class="item-label">Preprocess Time</span>
-              <span class="item-val" id="resPreTime">-- ms</span>
-            </div>
-            <div class="telemetry-item">
-              <span class="item-label">Memory Footprint</span>
-              <span class="item-val" id="resMem">-- MB</span>
-            </div>
-            <div class="telemetry-item">
-              <span class="item-label">Energy Consumed</span>
-              <span class="item-val" id="resEnergy">-- J</span>
-            </div>
-          </div>
-
-          <div class="predictions-wrapper">
-            <h5 class="predictions-title">Top 5 Classification Predictions</h5>
-            <div class="predictions-list" id="predictionsList">
-              <div class="prediction-placeholder">Click 'Run MobileNetV2 Inference' to execute model...</div>
-            </div>
-          </div>
+        <div class="table-container glassmorphic">
+          <table class="data-table" id="masterDataTable">
+            <thead>
+              <tr>
+                <th>Runtime</th>
+                <th>Architecture</th>
+                <th>Cold Start</th>
+                <th>Idle RSS</th>
+                <th>Active RSS</th>
+                <th>Peak RPS</th>
+                <th>p95 Latency</th>
+                <th>Energy (1k Inf)</th>
+                <th>Inf / Joule</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Dynamically populated by app.js -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- Comprehensive Empirical Data Table -->
-    <section class="table-section" id="tableSection">
-      <div class="section-header">
+    <!-- ================================================================= -->
+    <!-- PAGE 3: ARCHITECTURE COMPARISON (x86_64 vs ARM64)                 -->
+    <!-- ================================================================= -->
+    <section class="page-view" id="pageArch" role="tabpanel" aria-labelledby="tabBtnArch">
+      <div class="view-header">
         <div>
-          <h3 class="section-title">Master Empirical Results Matrix</h3>
-          <p class="section-subtitle">Aggregated benchmark results comparing all 6 runtimes on x86_64 vs ARM64</p>
+          <h2 class="view-title">Architecture Comparison: x86_64 Cloud vs. ARM64 Edge</h2>
+          <p class="view-subtitle">Side-by-side empirical feature matrix evaluating hardware specifications, inference throughput, energy efficiency, and dynamic workload suitability.</p>
         </div>
-        <button class="download-btn" id="btnExportCsv">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export CSV Dataset
-        </button>
+        
+        <!-- Workload Priority Selector -->
+        <div class="priority-selector-wrapper">
+          <span class="sub-label">Workload Priority:</span>
+          <div class="filter-pills" id="priorityFilterPills">
+            <button class="pill-btn active" data-priority="balanced">⚖️ Balanced</button>
+            <button class="pill-btn" data-priority="throughput">🚀 Max Throughput</button>
+            <button class="pill-btn" data-priority="energy">🌱 Green AI / Energy</button>
+            <button class="pill-btn" data-priority="latency">⚡ Sub-ms Latency</button>
+            <button class="pill-btn" data-priority="memory">💾 Compact Memory</button>
+          </div>
+        </div>
       </div>
 
-      <div class="table-container glassmorphic">
-        <table class="data-table" id="masterDataTable">
-          <thead>
-            <tr>
-              <th>Runtime</th>
-              <th>Arch</th>
-              <th>Cold Start</th>
-              <th>Idle RSS</th>
-              <th>Active RSS</th>
-              <th>Peak RPS</th>
-              <th>p95 Latency</th>
-              <th>Energy (1k Inf)</th>
-              <th>Inf / Joule</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- Dynamically populated by app.js -->
-          </tbody>
-        </table>
+      <!-- Dynamic Winner Recommendation Banner -->
+      <div class="arch-winner-card glassmorphic" id="archWinnerCard">
+        <div class="winner-header">
+          <div class="winner-trophy-badge" id="winnerTrophyBadge">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34"/><path d="M18 4H6v7a6 6 0 0 0 12 0V4z"/></svg>
+          </div>
+          <div>
+            <div class="winner-subhead">Dynamic Architecture Recommendation Engine</div>
+            <h3 class="winner-title" id="winnerTitle">Recommended Architecture: ARM64 Edge Platform</h3>
+          </div>
+        </div>
+
+        <div class="winner-body-grid">
+          <!-- Scores comparison -->
+          <div class="winner-score-box">
+            <div class="score-row">
+              <div class="score-label-col">
+                <span class="score-name">ARM64 Edge (Raspberry Pi 4 / Graviton)</span>
+                <span class="score-val emerald-text" id="scoreArmVal">92 / 100</span>
+              </div>
+              <div class="score-track">
+                <div class="score-fill emerald-bg" id="scoreArmFill" style="width: 92%;"></div>
+              </div>
+            </div>
+            <div class="score-row">
+              <div class="score-label-col">
+                <span class="score-name">x86_64 Cloud (AWS EC2 c6i Intel Xeon)</span>
+                <span class="score-val cyan-text" id="scoreX86Val">78 / 100</span>
+              </div>
+              <div class="score-track">
+                <div class="score-fill cyan-bg" id="scoreX86Fill" style="width: 78%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Analysis text -->
+          <div class="winner-explanation">
+            <h4 class="rationale-heading">Workload Suitability Analysis</h4>
+            <p class="rationale-text" id="winnerRationaleText">
+              For <strong>Balanced Edge-Cloud</strong> workloads, ARM64 Edge delivers superior electrical efficiency (9.39 Inf/Joule) with minimal thermal output, making it ideal for sustainable decentralized inference.
+            </p>
+            <div class="winner-tags" id="winnerHighlightsTags">
+              <span class="winner-tag">🌱 3.6x Energy Efficiency</span>
+              <span class="winner-tag">💾 94.1% Lean Memory</span>
+              <span class="winner-tag">💰 Zero Ingress / OpEx</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Weight Sliders -->
+        <div class="weight-sliders-wrapper">
+          <div class="sliders-title-row">
+            <span class="sliders-heading">Customize Evaluation Weights:</span>
+            <button class="reset-weights-btn" id="btnResetWeights">Reset Weights</button>
+          </div>
+          <div class="sliders-grid">
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <span>Throughput (RPS):</span>
+                <span class="slider-val" id="weightRpsVal">25%</span>
+              </div>
+              <input type="range" class="styled-range" id="rangeRps" min="0" max="100" value="25">
+            </div>
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <span>Energy Efficiency:</span>
+                <span class="slider-val" id="weightEnergyVal">35%</span>
+              </div>
+              <input type="range" class="styled-range" id="rangeEnergy" min="0" max="100" value="35">
+            </div>
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <span>Cold Start Speed:</span>
+                <span class="slider-val" id="weightColdStartVal">20%</span>
+              </div>
+              <input type="range" class="styled-range" id="rangeColdStart" min="0" max="100" value="20">
+            </div>
+            <div class="slider-control">
+              <div class="slider-label-row">
+                <span>Memory Compactness:</span>
+                <span class="slider-val" id="weightMemoryVal">20%</span>
+              </div>
+              <input type="range" class="styled-range" id="rangeMemory" min="0" max="100" value="20">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Comparison Table -->
+      <div class="table-section-wrapper">
+        <div class="section-header">
+          <div>
+            <h3 class="section-title">Architectural & Performance Feature Matrix</h3>
+            <p class="section-subtitle">Exhaustive empirical comparison across hardware specifications, operational envelope, and AI inference metrics.</p>
+          </div>
+          <div class="table-legend-badge">
+            <span class="badge info">x86_64 Cloud</span> vs <span class="badge positive">ARM64 Edge</span>
+          </div>
+        </div>
+
+        <div class="table-container glassmorphic">
+          <table class="data-table feature-matrix-table" id="archFeatureTable">
+            <thead>
+              <tr>
+                <th>Feature / Dimension</th>
+                <th>x86_64 Cloud (AWS c6i.xlarge)</th>
+                <th>ARM64 Edge (Raspberry Pi 4)</th>
+                <th>Advantage / Winning Architecture</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Hardware Specifications -->
+              <tr class="table-category-row">
+                <td colspan="4"><strong>1. Hardware & Compute Specifications</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Processor Family</strong></td>
+                <td>Intel Xeon Platinum 8375C (Ice Lake)</td>
+                <td>Broadcom BCM2711 (Cortex-A72)</td>
+                <td><span class="badge info">x86_64 (Enterprise Server Class)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Core Topology</strong></td>
+                <td>4 vCPUs (2 Cores, 4 SMT Threads)</td>
+                <td>4 Physical Cores (No SMT)</td>
+                <td><span class="badge positive">ARM64 (Dedicated Physical Cores)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Clock Frequency</strong></td>
+                <td>2.9 GHz Base &bull; 3.5 GHz All-Core Turbo</td>
+                <td>1.5 GHz Fixed Frequency</td>
+                <td><span class="badge info">x86_64 (+133% Higher Clock Speed)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Thermal Power Budget (TDP)</strong></td>
+                <td>~65W – 120W Server Socket</td>
+                <td>~5.0W – 7.5W Low-Power SoC</td>
+                <td><span class="badge positive">ARM64 (12x Lower Thermal Footprint)</span></td>
+              </tr>
+              <tr>
+                <td><strong>SIMD Vector Engine</strong></td>
+                <td>AVX-512 &bull; DL Boost &bull; VNNI (512-bit)</td>
+                <td>ARM NEON SIMD (128-bit)</td>
+                <td><span class="badge info">x86_64 (4x Wider SIMD Pipeline)</span></td>
+              </tr>
+              <tr>
+                <td><strong>System RAM</strong></td>
+                <td>8 GB DDR4 ECC (Server-grade)</td>
+                <td>4 GB LPDDR4-3200</td>
+                <td><span class="badge info">x86_64 (Higher Capacity & Bandwidth)</span></td>
+              </tr>
+              
+              <!-- Empirical Performance Metrics -->
+              <tr class="table-category-row">
+                <td colspan="4"><strong>2. Empirical AI Inference Metrics (MobileNetV2)</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Cold-Start (WasmEdge)</strong></td>
+                <td class="numeric">4.2 ms</td>
+                <td class="numeric">8.7 ms</td>
+                <td><span class="badge info">x86_64 (2.1x Faster Activation)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Cold-Start (Docker-Python)</strong></td>
+                <td class="numeric">640.0 ms</td>
+                <td class="numeric">1,180.0 ms</td>
+                <td><span class="badge info">x86_64 (1.8x Faster Container Spinup)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Peak Throughput (10k VUs)</strong></td>
+                <td class="numeric">2,085 RPS</td>
+                <td class="numeric">415 RPS</td>
+                <td><span class="badge info">x86_64 (5.0x Higher Throughput)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Tail Latency (p95 @ 1k VUs)</strong></td>
+                <td class="numeric">14.5 ms</td>
+                <td class="numeric">52.0 ms</td>
+                <td><span class="badge info">x86_64 (3.6x Lower Tail Latency)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Idle Memory RSS (WasmEdge)</strong></td>
+                <td class="numeric">7.4 MB</td>
+                <td class="numeric">6.8 MB</td>
+                <td><span class="badge positive">ARM64 (8.1% Leaner Idle RSS)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Active Memory RSS (WasmEdge)</strong></td>
+                <td class="numeric">14.8 MB</td>
+                <td class="numeric">13.2 MB</td>
+                <td><span class="badge positive">ARM64 (10.8% Leaner Active Footprint)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Active Memory (Docker-Python)</strong></td>
+                <td class="numeric">248.6 MB</td>
+                <td class="numeric">224.5 MB</td>
+                <td><span class="badge positive">ARM64 (9.7% Lower Container Overhead)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Energy per 1,000 Inferences</strong></td>
+                <td class="numeric">199.3 Joules</td>
+                <td class="numeric">106.5 Joules</td>
+                <td><span class="badge positive">ARM64 (46.6% Less Electrical Energy)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Energy Efficiency (Green AI)</strong></td>
+                <td class="numeric">5.02 Inferences / Joule</td>
+                <td class="numeric">9.39 Inferences / Joule</td>
+                <td><span class="badge positive">ARM64 (+87.1% Higher Energy Efficiency)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Average Active Power Draw</strong></td>
+                <td class="numeric">28.4 Watts</td>
+                <td class="numeric">4.1 Watts</td>
+                <td><span class="badge positive">ARM64 (6.9x Lower Power Consumption)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Deployment Density (Wasm/GB)</strong></td>
+                <td class="numeric">~67 Instances / GB</td>
+                <td class="numeric">~75 Instances / GB</td>
+                <td><span class="badge positive">ARM64 (11.9% Higher Sandbox Density)</span></td>
+              </tr>
+              <tr>
+                <td><strong>Operational Cost Model</strong></td>
+                <td>Hourly OpEx ($0.17/hr cloud billing)</td>
+                <td>Fixed CapEx ($35 one-time edge unit)</td>
+                <td><span class="badge positive">ARM64 (Zero Ongoing Ingress/Compute Cost)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Clean Minimal Footer -->
   <footer class="app-footer">
     <div class="footer-container">
       <div class="footer-team">
-        <span>Team 3 Empirical Cloud Computing Research</span> &middot;
-        <span>Empirical Cross-Architecture Benchmark of WebAssembly Runtimes vs. OCI Containers for Edge-Cloud AI Inference</span>
+        <span>Edge-Cloud AI Inference Platform</span> &bull; <span>Empirical Benchmark Suite</span>
       </div>
-      <div class="footer-links">
-        <a href="#heroSection">Back to Top</a> &middot;
-        <a href="../paper/paper.md" target="_blank">View Paper (Markdown)</a> &middot;
-        <a href="../docs/REPRODUCIBILITY.md" target="_blank">Reproducibility Guide</a>
+      <div class="footer-status">
+        <span class="status-dot"></span> Online &bull; Local &amp; Edge Hardware Ready
       </div>
     </div>
   </footer>
